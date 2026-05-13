@@ -1,0 +1,13 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+
+<h2>Delete the Note</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <p><strong>Title:</strong></p><p>{{ note.Title }}</p>
+    <p><strong>Content:</strong></p><p>{{ note.Note}}</p>
+    <button type="submit">Delete</button>
+</form>
+
+{% endblock %}

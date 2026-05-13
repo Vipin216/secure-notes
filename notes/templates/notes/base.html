@@ -1,0 +1,21 @@
+<h1>Secure Notes</h1>
+
+{% if user.is_authenticated %}
+  <a href="{% url 'view' %}">Home</a>
+  <a href="{% url 'create' %}">Create</a>
+
+  <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+  </form>
+{% endif %}
+
+<hr>
+
+{% if messages %}
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+{% block content %}{% endblock %}
