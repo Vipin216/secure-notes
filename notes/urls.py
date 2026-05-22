@@ -12,6 +12,10 @@ urlpatterns = [
     path('edit/<int:id>/',views.edit_note,name='edit'),
     path('delete/<int:id>/',views.delete_note,name='delete'),
     path('logs/',views.view_logs,name='logs'),
+    
+   
+    
+
 
 
 ]

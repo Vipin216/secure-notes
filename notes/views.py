@@ -9,6 +9,9 @@ from django.contrib import messages
 from .models import Notes,Notelog
 from .forms import NoteForm
 from .models import Notes
+from .api.serializers import NoteSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
  
@@ -163,3 +166,5 @@ def view_logs(request):
 
 
     
+
+
