@@ -12,8 +12,12 @@ from ..models import Notes
 from .serializers import NoteSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny
+)
+from rest_framework.decorators import permission_classes
+from django.db.models import Q
  
 @api_view(["GET"])
 def api_home(request):
@@ -23,18 +27,24 @@ def api_home(request):
 
 
 @api_view(["GET"])
-@login_required
+@permission_classes([IsAuthenticated])
 def api_notes(request):
+    search = request.query_params.get("search","")
+    ordering = request.query_params.get("ordering")
     notes=Notes.objects.filter(
         user=request.user
     )
+    if search:
+        notes=notes.filter( Q(Title__icontains=search)|Q(Note__icontains=search))
+    if ordering:
+        notes=notes.order_by(ordering)
     serializer = NoteSerializer(notes,many=True)
 
     return Response(serializer.data)
 
 
 @api_view(["POST"])
-@login_required
+@permission_classes([IsAuthenticated])
 
 def create_note_api(request):
     serializer = NoteSerializer(data=request.data)
@@ -45,7 +55,7 @@ def create_note_api(request):
     return Response(serializer.errors)
 
 @api_view(["PUT"])
-@login_required
+@permission_classes([IsAuthenticated])
 def edit_note_api(request,id):
     note = get_object_or_404(Notes,id=id,user=request.user)
 
@@ -59,7 +69,7 @@ def edit_note_api(request,id):
 
 
 @api_view(["DELETE"])
-@login_required
+@permission_classes([IsAuthenticated])
 def delete_note_api(request,id):
     note = get_object_or_404(Notes,id=id,user=request.user)
 
