@@ -10,7 +10,7 @@ from ..models import Notes,Notelog
 from ..forms import NoteForm
 from ..models import Notes
 from .serializers import NoteSerializer
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,throttle_classes
 from rest_framework.response import Response
 from rest_framework.permissions import (
     IsAuthenticated,
@@ -18,6 +18,8 @@ from rest_framework.permissions import (
 )
 from rest_framework.decorators import permission_classes
 from django.db.models import Q
+from .paginator import NotePagination
+from .throttles import NoteThrottle
  
 @api_view(["GET"])
 def api_home(request):
@@ -28,6 +30,7 @@ def api_home(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([NoteThrottle])
 def api_notes(request):
     search = request.query_params.get("search","")
     ordering = request.query_params.get("ordering")
@@ -38,9 +41,13 @@ def api_notes(request):
         notes=notes.filter( Q(Title__icontains=search)|Q(Note__icontains=search))
     if ordering:
         notes=notes.order_by(ordering)
-    serializer = NoteSerializer(notes,many=True)
+    
+    paginator = NotePagination()
+    result_page=paginator.paginate_queryset(notes,request)
 
-    return Response(serializer.data)
+    serializer = NoteSerializer(result_page,many=True)
+
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
@@ -56,6 +63,7 @@ def create_note_api(request):
 
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([NoteThrottle])
 def edit_note_api(request,id):
     note = get_object_or_404(Notes,id=id,user=request.user)
 

@@ -127,6 +127,12 @@ REST_FRAMEWORK={
         'rest_framework_simplejwt.authentication.JWTAuthentication',
 
     ),
+    'DEFAULT_THROTTLE_CLASSES':[
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES':{
+        'user':'100/min',
+    }
 }
 
 from datetime import timedelta
