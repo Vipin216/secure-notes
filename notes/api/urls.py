@@ -9,6 +9,8 @@ urlpatterns = [
     path('create/',views.create_note_api,name='api_create'),
     path('delete_api/<int:id>/',views.delete_note_api,name='api_delete'),
     path('edit/<int:id>/',views.edit_note_api,name='api_edit'),
+    path('register/',views.register_api,name="register"),
+    path('change-password/',views.change_password,name="passchange"),
     
     
 

@@ -9,7 +9,7 @@ from django.contrib import messages
 from ..models import Notes,Notelog
 from ..forms import NoteForm
 from ..models import Notes
-from .serializers import NoteSerializer
+from .serializers import NoteSerializer,RegisterSerializer
 from rest_framework.decorators import api_view,throttle_classes
 from rest_framework.response import Response
 from rest_framework.permissions import (
@@ -86,3 +86,58 @@ def delete_note_api(request,id):
     return Response({
         "message":"Successfully deleted"
     })
+
+
+
+@api_view(["POST"])
+
+def register_api(request):
+    serializer = RegisterSerializer(
+        data=request.data
+    )
+
+    if serializer.is_valid():
+
+        serializer.save()
+
+        return Response(
+            {
+                "message":"User registered successfully"
+            }
+        )
+
+    return Response(
+        serializer.errors,
+        status=400
+    )
+        
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+
+def change_password(request):
+    user = request.user
+    oldpass = request.data.get(
+        "old_password"
+    )
+
+    newpass = request.data.get(
+        "new_password"
+    )
+
+    if not user.check_password(oldpass):
+        return Response(
+        {
+            "error":"Wrong password"
+        },status=400
+        )
+    
+    user.set_password(newpass)
+    user.save()
+    return Response(
+        {
+            "message":"Password changed successfully"
+        }
+    )
+
