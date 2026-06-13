@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 
+
+from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,8 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'notes',
     'rest_framework',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     
 ]
 
@@ -50,6 +63,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'securenote.urls'
@@ -116,6 +132,7 @@ USE_TZ = True
 APP_DIRS = True
 
 LOGIN_URL = '/notes/login'
+LOGIN_REDIRECT_URL = '/notes/view/'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
@@ -142,3 +159,16 @@ SIMPLE_JWT={
 
     'REFRESH_TOKEN_LIFETIME':timedelta(days=1),
 }
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.getenv("GOOGLE_CLIENT_ID"),
+            'secret': os.getenv("GOOGLE_CLIENT_SECRET"),
+        }
+    }
+}
+
+
+SITE_ID = 1
