@@ -4,7 +4,7 @@
 <h2> Your notes </h2>
 {% for note in page_obj %}
     <p><b> {{ note.Title }} </b></p>
-    <p> {{ note.Note }} </p>
+    <p> {{ note.decrypted_note }} </p>
 {% endfor %}
 
 <form method="GET">

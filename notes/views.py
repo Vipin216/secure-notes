@@ -20,7 +20,7 @@ def views_notes(request):
     search_query = request.GET.get('search')
     notes = Notes.objects.filter(user=request.user)
     if search_query:
-        notes = notes.filter(Q(Title__icontains=search_query)|Q(Note__icontains=search_query))
+        notes = notes.filter(Q(Title__icontains=search_query))
     
     notes.order_by('-id')
     paginator = Paginator(notes,2)
@@ -120,6 +120,7 @@ def edit_note(request,id):
 
 
     else:
+        note.Note = note.decrypted_note
         form = NoteForm(instance=note)
     
     return render(request,'notes/edit.html',{'form':form})

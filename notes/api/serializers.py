@@ -4,10 +4,16 @@ from django.contrib.auth.models import User
 
 
 class NoteSerializer(serializers.ModelSerializer):
+
+    Note = serializers.SerializerMethodField()
+
     class Meta:
         model = Notes
         fields = '__all__'
         read_only_fields = ['user']
+    
+    def get_Note(self,obj):
+        return obj.decrypted_note
 
 
 class RegisterSerializer(serializers.ModelSerializer):

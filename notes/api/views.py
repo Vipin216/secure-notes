@@ -38,7 +38,7 @@ def api_notes(request):
         user=request.user
     )
     if search:
-        notes=notes.filter( Q(Title__icontains=search)|Q(Note__icontains=search))
+        notes=notes.filter( Q(Title__icontains=search))
     if ordering:
         notes=notes.order_by(ordering)
     
